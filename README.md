@@ -1,5 +1,6 @@
 # DiaMFDF
 
+
 ## Requirements
 
 The model is implemented using PyTorch. The versions of the main packages:
@@ -21,9 +22,7 @@ pip install -r requirements.txt
 
 ## TRAIN
 ### 1. Get Dataset
-prepare data, dependency parse by spacy. You can download it from ```https://drive.google.com/drive/folders/1OJCOh6lyUny_5PkXq_qEUtHVf46PGqkL?usp=drive_link``` to ```data/dataset```;
-OR
-Download origin dataset from ```https://github.com/unikcc/DiaASQ/tree/master/data/dataset``` to data/dataset;
+prepare data, dependency parse by spacy. You can download origin dataset from ```https://github.com/unikcc/DiaASQ/tree/master/data/dataset``` to data/dataset;
 
 then install Spacy and download the model weight:
   - 'zh_core_web_trf' for ZH dataset
