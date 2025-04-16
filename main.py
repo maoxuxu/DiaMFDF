@@ -17,7 +17,7 @@ from transformers import get_linear_schedule_with_warmup
 import torch.nn.functional as F
 
 from src.utils import MyDataLoader, RelationMetric 
-from src.model import BertWordPair
+from src.diamfdf import BertWordPair
 from src.common import set_seed, ScoreManager, update_config
 from tqdm import tqdm
 from loguru import logger
