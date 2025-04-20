@@ -244,7 +244,7 @@ if __name__ == '__main__':
     parser.add_argument('--dscgnn_layer_num', type=int, default=2)
     parser.add_argument('--gnn_layer_num', type=int, default=3)
     parser.add_argument('--gnn_dropout', type=float, default=0.1)
-    # -----------------------maoadd
+
     parser.add_argument('--gcn_layers', type=int, default=2)
     parser.add_argument('--gcn_heads', type=float, default=2)
     parser.add_argument('--gcn_dropout', type=float, default=0.1)
