@@ -116,14 +116,12 @@ class BertWordPair(nn.Module):
                 cur_qw, cur_kw = qw[rstart:rend], kw[cstart:cend]
                 x, y = token_index[rstart:rend], token_index[cstart:cend]
 
-                # This is used to compute relative distance, see the matrix in Fig.8 of our paper
                 x = - x if i > 0 and i < j else x
                 y = - y if j > 0 and i > j else y
 
-                x_pos_emb = self.custom_sinusoidal_position_embedding(x, pos_type) # 38，256（38是第一个句子的长度
+                x_pos_emb = self.custom_sinusoidal_position_embedding(x, pos_type)
                 y_pos_emb = self.custom_sinusoidal_position_embedding(y, pos_type)
 
-                # Refer to https://kexue.fm/archives/8265
                 x_cos_pos = x_pos_emb[..., None, 1::2].repeat_interleave(2, dim=-1) # 38， 1， 256
                 x_sin_pos = x_pos_emb[...,  None, ::2].repeat_interleave(2, dim=-1)
                 cur_qw2 = torch.stack([-cur_qw[..., 1::2], cur_qw[..., ::2]], -1) # [38, 6, 128, 2]
