@@ -98,7 +98,7 @@ class BertWordPair(nn.Module):
         ----------
         qw : torch.Tensor, (seq_len, class_nums, hidden_size)
         kw : torch.Tensor, (seq_len, class_nums, hidden_size)
-        token_index : 相对根的线程token位置
+        token_index : Relative root thread token position
         """
 
         seq_len, num_classes = qw.shape[:2]
@@ -321,8 +321,7 @@ class BertWordPair(nn.Module):
         reply_masks, speaker_masks, thread_masks = [kwargs[w] for w in ['reply_masks', 'speaker_masks', 'thread_masks']]
         sentence_masks, full_masks, dialogue_length = [kwargs[w] for w in ['sentence_masks', 'full_masks', 'dialogue_length']]
         
-        # DO 
-        # 1. bert encoding
+        # Encoding
         if self.config.merged_thread == 1: 
             sequence_outputs = self.bert(merged_input_ids, token_type_ids=merged_input_segments, attention_mask=merged_input_masks)[0] # utterance_num, seq_len, hidden_size
             sentence_sequence_outputs = self.root_merge_sentence(sequence_outputs, merged_input_masks, merged_dialog_length, thread_lengths)
@@ -335,8 +334,8 @@ class BertWordPair(nn.Module):
         PAD_ID = 0
         src_mask = (merged_input_ids != PAD_ID).unsqueeze(-2)
 
-        # 2. local encoding 
-        # 2.1 add thread gcn syntactic
+        # LDE
+        # LDE(SynMultiGCLs)
         if self.config.merged_thread == 1:
             # syngcn_outputs = self.syngcn(sequence_outputs, merged_input_masks, adj_matrixes)
 
@@ -353,7 +352,7 @@ class BertWordPair(nn.Module):
         syngcn_outputs = self.dropout(syngcn_outputs)
 
 
-        # 2.2 add thread gcn semantic
+        # LDE(SemMultiGCLs)
         _, semantic_adj = self.semantic_attention(sequence_outputs, sequence_outputs, sequence_outputs)
         semantic_adj = semantic_adj.mean(dim=1)
         if self.config.merged_thread == 1:
@@ -375,10 +374,10 @@ class BertWordPair(nn.Module):
             semgcn_output = self.merge_sentence(semgcn_output, input_masks, dialogue_length)
         semgcn_output = self.dropout(semgcn_output)
    
-        # 2.3 integrate syntactic and semantic
+        # integrate SynMultiGCLs and SemMultiGCLs
         sequence_outputs = self.layernorm(sentence_sequence_outputs+syngcn_outputs+semgcn_output)
         
-        # 3. global encoding 
+        # GDE
         global_masks, utterance_level_reply_adj, utterance_level_speaker_adj, utterance_level_mask, speaker_ids =  [kwargs[w] for w in ['global_masks', 'utterance_level_reply_adj', 'utterance_level_speaker_adj', 'utterance_level_mask','speaker_ids']]
         global_outputs = self.global_encoding(speaker_ids, sentence_sequence_outputs, global_masks, utterance_level_reply_adj, utterance_level_speaker_adj, utterance_level_mask) 
         
@@ -386,7 +385,7 @@ class BertWordPair(nn.Module):
         thread_masks = thread_masks.bool().unsqueeze(1)
         sequence_outputs = self.interactLayer(sequence_outputs, global_outputs, thread_masks, sentence_length=sentence_length,)
 
-        # 5. decode
+        # Decode
         sequence_outputs = self.dense_all(sequence_outputs)
         sequence_ent = sequence_outputs[:, :, :self.ent_dim]
         sequence_rel = sequence_outputs[:, :, self.ent_dim:self.ent_dim + self.rel_dim]
