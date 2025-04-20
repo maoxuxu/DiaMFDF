@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
-from src.Multi_GCN import MultiGraphConvLayer, MultiHeadSelfAttention, GraphConvLayer, InteractLayer
+from src.Multi_GCL import MultiGraphConvLayer, MultiHeadSelfAttention, GraphConvLayer, InteractLayer
 from src.Roberta import MultiHeadAttention,  InteractionAttention
 from transformers import AutoModel, AutoConfig
 import torch
