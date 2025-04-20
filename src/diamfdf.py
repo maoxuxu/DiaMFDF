@@ -381,7 +381,7 @@ class BertWordPair(nn.Module):
         global_masks, utterance_level_reply_adj, utterance_level_speaker_adj, utterance_level_mask, speaker_ids =  [kwargs[w] for w in ['global_masks', 'utterance_level_reply_adj', 'utterance_level_speaker_adj', 'utterance_level_mask','speaker_ids']]
         global_outputs = self.global_encoding(speaker_ids, sentence_sequence_outputs, global_masks, utterance_level_reply_adj, utterance_level_speaker_adj, utterance_level_mask) 
         
-        # 4. Interaction attention
+        # Interaction attention
         thread_masks = thread_masks.bool().unsqueeze(1)
         sequence_outputs = self.interactLayer(sequence_outputs, global_outputs, thread_masks, sentence_length=sentence_length,)
 
